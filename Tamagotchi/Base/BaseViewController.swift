@@ -15,19 +15,13 @@ class BaseViewController: UIViewController {
         configureLayout()
         configureView()
     }
-
-}
-
-extension BaseViewController: UIConfigurable {
-    func configureHierarchy() {
-        
-    }
     
-    func configureLayout() {
-        
-    }
+    func configureHierarchy() { }
+    
+    func configureLayout() { }
     
     func configureView() {
         view.backgroundColor = .tgBlue
     }
 }
+
