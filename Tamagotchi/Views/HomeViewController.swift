@@ -11,6 +11,13 @@ import RxSwift
 import RxCocoa
 
 class HomeViewController: BaseViewController {
+    
+    let settingButton = UIBarButtonItem(
+        image: Constants.UI.symbolImage.profile,
+        style: .plain,
+        target: nil,
+        action: nil)
+    
     let chatImageView = {
         let imageView = UIImageView()
         imageView.image = .bubble
@@ -164,17 +171,16 @@ class HomeViewController: BaseViewController {
     
     override func configureView() {
         super.configureView()
-        
-        let settingButton = UIBarButtonItem(image: Constants.UI.symbolImage.profile, style: .plain, target: nil, action: nil)
         navigationItem.rightBarButtonItem = settingButton
         
         riceTextField.attributedPlaceholder = NSAttributedString(string: Constants.UI.Message.giveMeRice, attributes: [.foregroundColor: UIColor.systemGray])
         riceTextField.textAlignment = .center
         
-        waterTextField.attributedPlaceholder = NSAttributedString(string: Constants.UI.Message.giveMeRice, attributes: [.foregroundColor: UIColor.systemGray])
+        waterTextField.attributedPlaceholder = NSAttributedString(string: Constants.UI.Message.giveMeWater, attributes: [.foregroundColor: UIColor.systemGray])
         waterTextField.textAlignment = .center
+        
+        navigationItem.backButtonTitle = ""
     }
-    
     
     func bind() {
         let input = HomeViewModel.Input(
@@ -191,21 +197,29 @@ class HomeViewController: BaseViewController {
         output.tamagotchiImage.drive(tamagotchiImageView.rx.image).disposed(by: disposeBag)
         output.nameText.drive(nameLabel.rx.text).disposed(by: disposeBag)
         output.statusText
-                .drive(stateLabel.rx.text)
-                .disposed(by: disposeBag)
-
+            .drive(stateLabel.rx.text)
+            .disposed(by: disposeBag)
+        
         riceButton.rx.tap
             .bind(with: self) { owner, _ in
                 owner.riceTextField.text = ""
                 owner.view.endEditing(true)
             }
             .disposed(by: disposeBag)
-            
+        
         waterButton.rx.tap
             .bind(with: self) { owner, _ in
                 owner.waterTextField.text = ""
                 owner.view.endEditing(true)
             }
             .disposed(by: disposeBag)
+        
+        settingButton.rx.tap
+            .bind(with: self) { owner, _ in
+                let settingVC = SettingViewController()
+                owner.navigationController?.pushViewController(settingVC, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
     }
 }
