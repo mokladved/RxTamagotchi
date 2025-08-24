@@ -15,25 +15,29 @@ final class TamagotchiManager {
     
     private let userDefaults = UserDefaults.standard
 
-    private let riceKey = "riceCount"
-    private let waterKey = "dropletCount"
-    private let nicknameKey = "nickname"
     
     let currentTamagotchi: BehaviorRelay<Tamagotchi>
     
     private init() {
-        let rice = userDefaults.integer(forKey: riceKey)
-        let water = userDefaults.integer(forKey: waterKey)
-        let nickname = userDefaults.string(forKey: nicknameKey) ?? "대장"
-        let initialValue = Tamagotchi(riceCount: rice, dropletCount: water, nickname: nickname)
-        
+        let rice = userDefaults.integer(forKey: Keys.rice)
+        let water = userDefaults.integer(forKey: Keys.water)
+        let nickname = userDefaults.string(forKey: Keys.nickname) ?? "대장"
+        let typeRawValue = userDefaults.string(forKey: Keys.type) ?? TamagotchiType.ddakkum.rawValue
+        let type = TamagotchiType(rawValue: typeRawValue) ?? .ddakkum
+    
+        var initialValue = Tamagotchi(type: type)
+        initialValue.riceCount = rice
+        initialValue.dropletCount = water
+        initialValue.nickname = nickname
+                
         self.currentTamagotchi = BehaviorRelay(value: initialValue)
-        }
+    }
 
     func save(_ tamagotchi: Tamagotchi) {
-        userDefaults.set(tamagotchi.riceCount, forKey: riceKey)
-        userDefaults.set(tamagotchi.dropletCount, forKey: waterKey)
-        userDefaults.set(tamagotchi.nickname, forKey: nicknameKey)
+        userDefaults.set(tamagotchi.type.rawValue, forKey: Keys.type)
+        userDefaults.set(tamagotchi.riceCount, forKey: Keys.rice)
+        userDefaults.set(tamagotchi.dropletCount, forKey: Keys.water)
+        userDefaults.set(tamagotchi.nickname, forKey: Keys.nickname)
         
         currentTamagotchi.accept(tamagotchi)
     }
@@ -43,11 +47,13 @@ final class TamagotchiManager {
     }
     
     func reset() {
-        userDefaults.removeObject(forKey: nicknameKey)
-        userDefaults.removeObject(forKey: riceKey)
-        userDefaults.removeObject(forKey: waterKey)
+        userDefaults.removeObject(forKey: Keys.type)
+        userDefaults.removeObject(forKey: Keys.nickname)
+        userDefaults.removeObject(forKey: Keys.rice)
+        userDefaults.removeObject(forKey: Keys.water)
+        userDefaults.removeObject(forKey: Keys.isDone)
         
-        let initialValue = Tamagotchi(riceCount: 0, dropletCount: 0, nickname: "대장")
+        let initialValue = Tamagotchi(type: .ddakkum)
         currentTamagotchi.accept(initialValue)
     }
 }
