@@ -22,6 +22,7 @@ final class SettingViewModel {
     
     struct Output {
         let settingOptions: Driver<[SettingMenu]>
+        let currentNickname: Driver<String>
         let nameSettingTapped: PublishRelay<Void>
         let changeTamagotchiTapped: PublishRelay<Void>
         let resetTapped: PublishRelay<Void>
@@ -36,6 +37,11 @@ final class SettingViewModel {
         
         let settingOptions = Observable.just(settingMenus)
             .asDriver(onErrorJustReturn: [])
+        
+        let nicknameDriver = TamagotchiManager.shared.currentTamagotchi
+                    .map { tamagotchi in
+                        tamagotchi.nickname }
+                    .asDriver(onErrorJustReturn: "")
         
         let selectedRow = input.cellSelected.map { indexPath in
             indexPath.row }
@@ -64,6 +70,7 @@ final class SettingViewModel {
         
         return Output(
             settingOptions: settingOptions,
+            currentNickname: nicknameDriver,
             nameSettingTapped: nameSettingTappedRelay,
             changeTamagotchiTapped: changeTamagotchiTappedRelay,
             resetTapped: resetTappedRelay
@@ -72,5 +79,7 @@ final class SettingViewModel {
     
     func resetData() {
         TamagotchiManager.shared.reset()
+        let didReset = Notification.Name(Keys.didReset)
+        NotificationCenter.default.post(name: didReset, object: nil)
     }
 }

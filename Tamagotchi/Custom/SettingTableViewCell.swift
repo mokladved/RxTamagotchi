@@ -30,6 +30,10 @@ final class SettingTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+    }
+    
     func configure(with item: SettingMenu, name: String?) {
         iconImageView.image = UIImage(systemName: item.imageName)
         titleLabel.text = item.title
@@ -37,6 +41,11 @@ final class SettingTableViewCell: UITableViewCell {
         currentNameLabel.text = name
         currentNameLabel.isHidden = (name == nil)
     }
+    
+    func updateNickname(_ name: String) {
+        currentNameLabel.text = name
+    }
+    
 }
 
 extension SettingTableViewCell: UIConfigurable {
