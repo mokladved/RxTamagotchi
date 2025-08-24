@@ -8,20 +8,46 @@
 import Foundation
 
 struct Tamagotchi {
+    var type: TamagotchiType = .ddakkum
+    
+    init(type: TamagotchiType = .preparing) {
+        self.type = type
+    }
+    
     var riceCount = 0
     var dropletCount = 0
     var nickname = "대장"
+    
     var level: Int {
-        let initialLevel = 1
-        let calculatedLevel = ((Double(riceCount) / 5.0) + (Double(dropletCount) / 2.0)) / 10.0
-        let finalLevel = Int(calculatedLevel) + initialLevel
+        let score = (riceCount / 5) + (dropletCount / 2)
         
-        if finalLevel >= 10 {
-            return 10
-        } else if finalLevel <= 1 {
+        switch score {
+        case ..<20:
             return 1
-        } else {
-            return finalLevel
+        case 20..<100:
+            return score / 10
+        default:
+            return 10
         }
+    }
+    
+    var imageName: String {
+        let id: Int
+        switch self.type {
+        case .ddakkum:
+            id = 1
+        case .bangsil:
+            id = 2
+        case .banjjak:
+            id = 3
+        case .preparing:
+            return Constants.UI.Title.noImage
+        }
+        
+        return level < 10 ? "\(id)-\(level)" : "\(id)-9"
+    }
+    
+    var name: String {
+        return type.name
     }
 }
