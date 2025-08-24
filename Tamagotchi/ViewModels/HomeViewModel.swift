@@ -11,7 +11,6 @@ import RxCocoa
 
 final class HomeViewModel {
     private let tGManager = TamagotchiManager.shared
-    private let tamagotchiState: BehaviorRelay<Tamagotchi>
     private let bubbleRelay: BehaviorRelay<String>
     
     struct Input {
@@ -38,37 +37,28 @@ final class HomeViewModel {
     
     init() {
         let initialTamagotchi = tGManager.load()
-        self.tamagotchiState = BehaviorRelay(value: initialTamagotchi)
-        
         let firstMessage = Messages.shuffle(for: initialTamagotchi.nickname)
         self.bubbleRelay = BehaviorRelay(value: firstMessage)
-        
-        tamagotchiState
-            .subscribe(with: self) { owner, tamagotchi in
-                owner.tGManager.save(tamagotchi)
-            }
-            .disposed(by: disposeBag)
+
     }
     
     func transform(input: Input) -> Output {
         
         input.riceButtonTap
             .withLatestFrom(input.riceAmountText.orEmpty)
-            .map { text in
-                Int(text) ?? 1
-            }
-            .subscribe(with: self) { owner, amount in
-                var current = owner.tamagotchiState.value
-                
+            .map { text in Int(text) ?? 1 }
+            .subscribe(with: self, onNext: { owner, amount in
                 guard amount > 0, amount < 100 else {
                     owner.bubbleRelay.accept("밥알은 1~99개까지 먹을 수 있어요!")
                     return
                 }
                 
+                var current = owner.tGManager.load()
                 current.riceCount += amount
-                owner.tamagotchiState.accept(current)
+                owner.tGManager.save(current)
+        
                 owner.bubbleRelay.accept(Messages.shuffle(for: current.nickname))
-            }
+            })
             .disposed(by: disposeBag)
         
         
@@ -76,18 +66,21 @@ final class HomeViewModel {
             .withLatestFrom(input.waterAmountText.orEmpty)
             .map { text in Int(text) ?? 1 }
             .subscribe(with: self) { owner, amount in
-                var current = owner.tamagotchiState.value
-                
                 guard amount > 0, amount < 50 else {
                     owner.bubbleRelay.accept("물방울은 1~49개까지 마실 수 있어요!")
                     return
                 }
                 
+                var current = owner.tGManager.load()
                 current.dropletCount += amount
-                owner.tamagotchiState.accept(current)
+                owner.tGManager.save(current)
+                
                 owner.bubbleRelay.accept(Messages.shuffle(for: current.nickname))
             }
             .disposed(by: disposeBag)
+        
+        let tamagotchiState = tGManager.currentTamagotchi.asDriver(onErrorJustReturn: tGManager.load())
+
         
         let navigationTitle = tamagotchiState
             .map { tamagotchi in
@@ -97,12 +90,13 @@ final class HomeViewModel {
         
         let tamagotchiImage = tamagotchiState
             .map { tamagotchi in
-                UIImage(named: "2-\(tamagotchi.level)")
+                UIImage(named: tamagotchi.imageName)
             }
             .asDriver(onErrorJustReturn: nil)
         
         let nameText = tamagotchiState
-            .map { _ in "방실방실 다마고치" }
+            .map { tamagotchi in
+                tamagotchi.name }
             .asDriver(onErrorJustReturn: "")
         
         let levelText = tamagotchiState
