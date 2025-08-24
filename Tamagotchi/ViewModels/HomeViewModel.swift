@@ -30,6 +30,7 @@ final class HomeViewModel {
         let levelText: Driver<String>
         let riceCountText: Driver<String>
         let waterCountText: Driver<String>
+        let statusText: Driver<String>
         
     }
     
@@ -110,6 +111,12 @@ final class HomeViewModel {
             }
             .asDriver(onErrorJustReturn: "")
         
+        let statusText = tamagotchiState
+            .map { tamagotchi in
+                "LV\(tamagotchi.level) • 밥알 \(tamagotchi.riceCount)개 • 물방울 \(tamagotchi.dropletCount)개"
+            }
+            .asDriver(onErrorJustReturn: "")
+        
         let riceCountText = tamagotchiState
             .map { tamagotchi in
                 "밥알 \(tamagotchi.riceCount)개" }
@@ -130,7 +137,8 @@ final class HomeViewModel {
             nameText: nameText,
             levelText: levelText,
             riceCountText: riceCountText,
-            waterCountText: waterCountText
+            waterCountText: waterCountText,
+            statusText: statusText
         )
     }
 }
