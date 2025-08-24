@@ -64,18 +64,32 @@ final class SettingViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
+        output.currentNickname
+            .drive(with: self) { owner, nickname in
+                let indexPath = IndexPath(row: 0, section: 0)
+                if let cell = owner.tableView.cellForRow(at: indexPath) as? SettingTableViewCell {
+                    cell.updateNickname(nickname)
+                }
+            }
+            .disposed(by: disposeBag)
+        
         output.nameSettingTapped
             .bind(with: self) { owner, _ in
-                 let nameSettingVC = NameSettingViewController()
-                 owner.navigationController?.pushViewController(nameSettingVC, animated: true)
+                 let nicknameSettingVC = NicknameSettingViewController()
+                 owner.navigationController?.pushViewController(nicknameSettingVC, animated: true)
                 
             }
             .disposed(by: disposeBag)
         
         output.changeTamagotchiTapped
             .bind(with: self) { owner, _ in
-                 let changeVC = ChangeTamagotchiViewController()
-                 owner.navigationController?.pushViewController(changeVC, animated: true)
+                let changeVC = ChangeTamagotchiViewController()
+                changeVC.title = Constants.UI.Title.changeTG
+                changeVC.didSelect = { [weak owner] in
+                    owner?.navigationController?.popViewController(animated: true)
+                }
+                
+                owner.navigationController?.pushViewController(changeVC, animated: true)
             }
             .disposed(by: disposeBag)
         
