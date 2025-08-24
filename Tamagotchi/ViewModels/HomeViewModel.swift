@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class HomeViewModel {
-    private let tGManager = TamagotchiManager()
+    private let tGManager = TamagotchiManager.shared
     private let tamagotchiState: BehaviorRelay<Tamagotchi>
     private let bubbleRelay: BehaviorRelay<String>
     

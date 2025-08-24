@@ -56,7 +56,7 @@ final class SettingViewController: BaseViewController {
             .drive(tableView.rx.items(cellIdentifier: SettingTableViewCell.identifier, cellType: SettingTableViewCell.self)) { row, element, cell in
                 
                 if row == 0 {
-                    let currentName = TamagotchiManager().load().nickname
+                    let currentName = TamagotchiManager.shared.load().nickname
                     cell.configure(with: element, name: currentName)
                 } else {
                     cell.configure(with: element, name: nil)

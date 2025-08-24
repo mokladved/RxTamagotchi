@@ -71,6 +71,6 @@ final class SettingViewModel {
     }
     
     func resetData() {
-        TamagotchiManager().reset()
+        TamagotchiManager.shared.reset()
     }
 }
