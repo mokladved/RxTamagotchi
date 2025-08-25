@@ -27,6 +27,12 @@ enum Constants {
             static let select = "선택하기"
             static let cancel = "취소"
             static let selectTG = "다마고치 선택하기"
+            static let tamagotchi = "Tamagotchi"
+            static let lotto = "Lotto"
+            static let boxOffice = "Box Office"
+            static let game = "gamecontroller.fill"
+            static let numbers = "numbers.rectangle.fill"
+            static let movie = "movieclapper.fill"
         }
         
         enum symbolImage {
@@ -36,6 +42,9 @@ enum Constants {
             static let pencil = UIImage(systemName: Title.pencil)
             static let moon = UIImage(systemName: Title.moon)
             static let clockwise = UIImage(systemName: Title.clockwise)
+            static let game = UIImage(systemName: Title.game)
+            static let numbers = UIImage(systemName: Title.numbers)
+            static let movie = UIImage(systemName: Title.movie)
         }
         
         enum Message {
