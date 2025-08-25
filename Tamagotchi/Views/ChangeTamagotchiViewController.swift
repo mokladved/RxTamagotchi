@@ -92,7 +92,7 @@ final class ChangeTamagotchiViewController: BaseViewController {
         
         output.changeAlert
             .drive(onNext: { [weak self] tamagotchi in
-                self?.showChangeAlert(for: tamagotchi)
+                self?.showDetailPopup(for: tamagotchi)
             })
             .disposed(by: disposeBag)
         
@@ -104,18 +104,17 @@ final class ChangeTamagotchiViewController: BaseViewController {
            }
     
     
-    // TODO: overCurrentContext로 구현하기
-    private func showChangeAlert(for tamagotchi: Tamagotchi) {
-        let alert = UIAlertController(title: "", message: "\(tamagotchi.name)을 선택하시겠습니까?", preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: Constants.UI.Title.select, style: .default) { [weak self] _ in
+    // TODO: overCurrentContext로 구현하기 -> Done
+    private func showDetailPopup(for tamagotchi: Tamagotchi) {
+        let popupVC = TamagotchiDetailPopupViewController()
+        popupVC.tamagotchi = tamagotchi
+        
+        popupVC.changeButtonTapped = { [weak self] in
             self?.changeConfirmed.accept(tamagotchi)
         }
-        let cancelAction = UIAlertAction(title: Constants.UI.Title.cancel, style: .cancel)
         
-        alert.addAction(confirmAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true)
+        popupVC.modalPresentationStyle = .overCurrentContext
+        present(popupVC, animated: true)
     }
 }
 
