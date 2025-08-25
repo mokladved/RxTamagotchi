@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         configureNavAppearance()
+        configureTabBarAppearance()
         
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
@@ -22,9 +23,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isDone = UserDefaults.standard.bool(forKey: Keys.isDone)
         
         if isDone {
-            let rootVC = HomeViewController()
-            let navVC = UINavigationController(rootViewController: rootVC)
-            window?.rootViewController = navVC
+            let tabBarController = UITabBarController()
+            
+            let homeVC = UINavigationController(rootViewController: HomeViewController())
+            let lottoVC = LottoViewConttroller()
+            let boxVC = UINavigationController(rootViewController: BoxOfficeViewController())
+            
+            homeVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.tamagotchi, image: Constants.UI.symbolImage.game, tag: 0)
+            lottoVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.lotto, image: Constants.UI.symbolImage.numbers, tag: 1)
+            boxVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.boxOffice, image: Constants.UI.symbolImage.movie, tag:2)
+            
+            tabBarController.viewControllers = [homeVC, lottoVC, boxVC]
+            window?.rootViewController = tabBarController
         } else {
             let rootVC = ChangeTamagotchiViewController()
             rootVC.title = Constants.UI.Title.selectTG
@@ -76,11 +86,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         appearance.configureWithOpaqueBackground()
         appearance.shadowColor = .clear
         appearance.backgroundColor = .tgBlue
-        appearance.shadowColor = .lightGray
         
         UINavigationBar.appearance().tintColor = .tgCyan
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
+    func configureTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .tgBlue
+        
+        UITabBar.appearance().tintColor = .tgCyan
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
     }
 }
 
