@@ -49,7 +49,7 @@ final class HomeViewModel {
             .map { text in Int(text) ?? 1 }
             .subscribe(with: self, onNext: { owner, amount in
                 guard amount > 0, amount < 100 else {
-                    owner.bubbleRelay.accept("밥알은 1~99개까지 먹을 수 있어요!")
+                    owner.bubbleRelay.accept(Constants.UI.Message.riceLimit)
                     return
                 }
                 
@@ -67,7 +67,7 @@ final class HomeViewModel {
             .map { text in Int(text) ?? 1 }
             .subscribe(with: self) { owner, amount in
                 guard amount > 0, amount < 50 else {
-                    owner.bubbleRelay.accept("물방울은 1~49개까지 마실 수 있어요!")
+                    owner.bubbleRelay.accept(Constants.UI.Message.waterLimit)
                     return
                 }
                 

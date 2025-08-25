@@ -44,6 +44,9 @@ enum Constants {
             static let reset = "정말 다시 처음부터 시작하실 건가용?"
             static let yes = "웅!"
             static let no = "아냐!"
+            static let riceLimit = "밥알은 1~99개까지 먹을 수 있어요!"
+            static let waterLimit = "물방울은 1~49개까지 마실 수 있어요!"
+            
         }
     }
 }
