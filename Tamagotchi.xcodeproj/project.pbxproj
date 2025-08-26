@@ -10,6 +10,7 @@
 		2B20177F2E59946600AD0004 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2B20177E2E59946600AD0004 /* SnapKit */; };
 		2B2017822E59947C00AD0004 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 2B2017812E59947C00AD0004 /* RxCocoa */; };
 		2B2017842E59947C00AD0004 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2B2017832E59947C00AD0004 /* RxSwift */; };
+		2B9C47CA2E5E27C700F7004C /* Toast in Frameworks */ = {isa = PBXBuildFile; productRef = 2B9C47C92E5E27C700F7004C /* Toast */; };
 		2BF9E6692E5CAF01005D78C3 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 2BF9E6682E5CAF01005D78C3 /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 				2B2017842E59947C00AD0004 /* RxSwift in Frameworks */,
 				2BF9E6692E5CAF01005D78C3 /* Alamofire in Frameworks */,
 				2B2017822E59947C00AD0004 /* RxCocoa in Frameworks */,
+				2B9C47CA2E5E27C700F7004C /* Toast in Frameworks */,
 				2B20177F2E59946600AD0004 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,6 +95,7 @@
 				2B2017812E59947C00AD0004 /* RxCocoa */,
 				2B2017832E59947C00AD0004 /* RxSwift */,
 				2BF9E6682E5CAF01005D78C3 /* Alamofire */,
+				2B9C47C92E5E27C700F7004C /* Toast */,
 			);
 			productName = Tamagotchi;
 			productReference = 2B2017652E5992A000AD0004 /* Tamagotchi.app */;
@@ -126,6 +129,7 @@
 				2B20177D2E59946600AD0004 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				2B2017802E59947C00AD0004 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				2BF9E6672E5CAF01005D78C3 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				2B9C47C82E5E27C700F7004C /* XCRemoteSwiftPackageReference "Toast-Swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2B2017662E5992A000AD0004 /* Products */;
@@ -385,6 +389,14 @@
 				minimumVersion = 6.9.0;
 			};
 		};
+		2B9C47C82E5E27C700F7004C /* XCRemoteSwiftPackageReference "Toast-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scalessec/Toast-Swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.1;
+			};
+		};
 		2BF9E6672E5CAF01005D78C3 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -410,6 +422,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2B2017802E59947C00AD0004 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		2B9C47C92E5E27C700F7004C /* Toast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2B9C47C82E5E27C700F7004C /* XCRemoteSwiftPackageReference "Toast-Swift" */;
+			productName = Toast;
 		};
 		2BF9E6682E5CAF01005D78C3 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
