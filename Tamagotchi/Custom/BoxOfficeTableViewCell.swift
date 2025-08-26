@@ -59,6 +59,7 @@ final class BoxOfficeTableViewCell: UITableViewCell, UIConfigurable {
         }
         
         movieTitleLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
             make.top.equalTo(rankLabel.snp.top).offset(-4)
             make.leading.equalTo(rankLabel.snp.trailing).offset(16)
             make.trailing.equalTo(contentView.snp.trailing).offset(-20)
