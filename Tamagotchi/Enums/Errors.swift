@@ -7,4 +7,6 @@
 
 enum LottoError: Error {
     case invalid
+    case networkDisconnected
+    case unknown
 }

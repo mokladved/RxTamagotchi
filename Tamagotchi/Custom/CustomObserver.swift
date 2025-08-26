@@ -10,6 +10,9 @@ import Alamofire
 import RxSwift
 
 final class CustomObservable {
+    
+    private static let reachability = NetworkReachabilityManager()!
+
     static func fetchBoxOffice(date: String) -> Observable<[DailyBoxOffice]> {
         return Observable.create { observer in
             let url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json"
@@ -38,6 +41,11 @@ final class CustomObservable {
     
     static func fetchLotto(round: Int) -> Observable<Lotto> {
         return Observable.create { observer in
+            if !self.reachability.isReachable {
+                observer.onError(LottoError.networkDisconnected)
+                return Disposables.create()
+            }
+            
             let url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(round)"
             
             let request = AF.request(url)
