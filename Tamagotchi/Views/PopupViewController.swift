@@ -66,7 +66,7 @@ final class TamagotchiDetailPopupViewController: UIViewController {
     
     private lazy var changeButton = {
         let button = UIButton()
-        button.setTitle("변경하기", for: .normal)
+        button.setTitle("선택하기g", for: .normal)
         button.setTitleColor(.tgCyan, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14)
         button.backgroundColor = .clear

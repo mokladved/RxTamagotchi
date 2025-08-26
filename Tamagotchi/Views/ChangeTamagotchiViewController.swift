@@ -11,8 +11,6 @@ import RxSwift
 import RxCocoa
 
 final class ChangeTamagotchiViewController: BaseViewController {
-    var didSelect: (() -> Void)?
-    
     private var collectionView = {
         let layout = UICollectionViewFlowLayout()
         let spacing: CGFloat = 16
@@ -66,7 +64,7 @@ final class ChangeTamagotchiViewController: BaseViewController {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -98,10 +96,11 @@ final class ChangeTamagotchiViewController: BaseViewController {
         
         output.didChange
             .drive(with: self, onNext: { owner, _ in
-                owner.didSelect?()
+                let homeVC = HomeViewController()
+                owner.navigationController?.setViewControllers([homeVC], animated: true)
             })
             .disposed(by: disposeBag)
-           }
+    }
     
     
     // TODO: overCurrentContext로 구현하기 -> Done

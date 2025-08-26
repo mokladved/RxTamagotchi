@@ -20,37 +20,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
         
+        let tabBarController = UITabBarController()
+        
+        let lottoVC = LottoViewConttroller()
+        let boxVC = UINavigationController(rootViewController: BoxOfficeViewController())
+        
+        lottoVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.lotto, image: Constants.UI.symbolImage.numbers, tag: 1)
+        boxVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.boxOffice, image: Constants.UI.symbolImage.movie, tag:2)
+        
+        
         let isDone = UserDefaults.standard.bool(forKey: Keys.isDone)
+        let homeNavVC = UINavigationController()
+        homeNavVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.tamagotchi, image: Constants.UI.symbolImage.game, tag: 0)
+        
+        let homeVC = HomeViewController()
         
         if isDone {
-            let tabBarController = UITabBarController()
-            
-            let homeVC = UINavigationController(rootViewController: HomeViewController())
-            let lottoVC = LottoViewConttroller()
-            let boxVC = UINavigationController(rootViewController: BoxOfficeViewController())
-            
-            homeVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.tamagotchi, image: Constants.UI.symbolImage.game, tag: 0)
-            lottoVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.lotto, image: Constants.UI.symbolImage.numbers, tag: 1)
-            boxVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.boxOffice, image: Constants.UI.symbolImage.movie, tag:2)
-            
-            tabBarController.viewControllers = [homeVC, lottoVC, boxVC]
-            window?.rootViewController = tabBarController
+            homeNavVC.setViewControllers([homeVC], animated: false)
         } else {
-            let rootVC = ChangeTamagotchiViewController()
-            rootVC.title = Constants.UI.Title.selectTG
-
-            rootVC.didSelect = { [weak self] in
-                let homeNav = UINavigationController(rootViewController: HomeViewController())
-                self?.window?.rootViewController = homeNav
-                self?.window?.makeKeyAndVisible()
-            }
-            
-            let navVC = UINavigationController(rootViewController: rootVC)
-            window?.rootViewController = navVC
+            let changeVC = ChangeTamagotchiViewController()
+            changeVC.title = Constants.UI.Title.selectTG
+            homeNavVC.setViewControllers([changeVC], animated: false)
         }
-        window?.makeKeyAndVisible()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleResetRequest), name: Notification.Name(Keys.didReset), object: nil)
+        tabBarController.viewControllers = [homeNavVC, lottoVC, boxVC]
+        self.window?.rootViewController = tabBarController
+        self.window?.makeKeyAndVisible()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -107,22 +102,6 @@ extension SceneDelegate: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         let backBarButtonItem = UIBarButtonItem(title: Constants.UI.Title.setting, style: .plain, target: nil, action: nil)
         navigationController.topViewController?.navigationItem.backBarButtonItem = backBarButtonItem
-    }
-}
-
-extension SceneDelegate {
-    @objc private func handleResetRequest() {
-        let vc = ChangeTamagotchiViewController()
-        vc.title = Constants.UI.Title.selectTG
-        vc.didSelect = { [weak self] in
-            let homeNav = UINavigationController(rootViewController: HomeViewController())
-            self?.window?.rootViewController = homeNav
-            self?.window?.makeKeyAndVisible()
-        }
-        
-        let navVC = UINavigationController(rootViewController: vc)
-        window?.rootViewController = navVC
-        window?.makeKeyAndVisible()
     }
 }
 

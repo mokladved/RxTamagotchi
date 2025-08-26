@@ -22,6 +22,8 @@ final class SettingViewController: BaseViewController {
     
     private let viewModel = SettingViewModel()
     private let disposeBag = DisposeBag()
+    private let resetConfirmTrigger = PublishRelay<Void>()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +49,8 @@ final class SettingViewController: BaseViewController {
     
     private func bind() {
         let input = SettingViewModel.Input(
-            cellSelected: tableView.rx.itemSelected
+            cellSelected: tableView.rx.itemSelected,
+            resetConfirmed: resetConfirmTrigger
         )
         
         let output = viewModel.transform(input: input)
@@ -75,8 +78,8 @@ final class SettingViewController: BaseViewController {
         
         output.nameSettingTapped
             .bind(with: self) { owner, _ in
-                 let nicknameSettingVC = NicknameSettingViewController()
-                 owner.navigationController?.pushViewController(nicknameSettingVC, animated: true)
+                let nicknameSettingVC = NicknameSettingViewController()
+                owner.navigationController?.pushViewController(nicknameSettingVC, animated: true)
                 
             }
             .disposed(by: disposeBag)
@@ -85,10 +88,6 @@ final class SettingViewController: BaseViewController {
             .bind(with: self) { owner, _ in
                 let changeVC = ChangeTamagotchiViewController()
                 changeVC.title = Constants.UI.Title.changeTG
-                changeVC.didSelect = { [weak owner] in
-                    owner?.navigationController?.popViewController(animated: true)
-                }
-                
                 owner.navigationController?.pushViewController(changeVC, animated: true)
             }
             .disposed(by: disposeBag)
@@ -104,13 +103,20 @@ final class SettingViewController: BaseViewController {
                 owner.tableView.deselectRow(at: indexPath, animated: true)
             }
             .disposed(by: disposeBag)
+        output.didReset
+            .bind(with: self) { owner, _ in
+                let changeVC = ChangeTamagotchiViewController()
+                changeVC.title = Constants.UI.Title.selectTG
+                owner.navigationController?.setViewControllers([changeVC], animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func showResetAlert() {
         let alert = UIAlertController(title: Constants.UI.Title.reset, message: Constants.UI.Message.reset, preferredStyle: .alert)
         
         let confirmAction = UIAlertAction(title: Constants.UI.Message.yes, style: .default) { [weak self] _ in
-            self?.viewModel.resetData()
+            self?.resetConfirmTrigger.accept(())
         }
         
         let cancelAction = UIAlertAction(title:  Constants.UI.Message.no, style: .cancel)

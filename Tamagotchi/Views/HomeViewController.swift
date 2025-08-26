@@ -88,6 +88,7 @@ class HomeViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleResetRequest), name: Notification.Name(Keys.didReset), object: nil)
     }
     
     override func configureHierarchy() {
@@ -221,5 +222,17 @@ class HomeViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
+    }
+}
+
+extension HomeViewController {
+    @objc private func handleResetRequest() {
+        
+        if !(self.navigationController?.topViewController is ChangeTamagotchiViewController) {
+            let changeVC = ChangeTamagotchiViewController()
+            changeVC.title = Constants.UI.Title.selectTG
+            
+            self.navigationController?.pushViewController(changeVC, animated: true)
+        }
     }
 }

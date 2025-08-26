@@ -18,6 +18,7 @@ final class SettingViewModel {
     
     struct Input {
         let cellSelected: ControlEvent<IndexPath>
+        let resetConfirmed: PublishRelay<Void>
     }
     
     struct Output {
@@ -26,6 +27,7 @@ final class SettingViewModel {
         let nameSettingTapped: PublishRelay<Void>
         let changeTamagotchiTapped: PublishRelay<Void>
         let resetTapped: PublishRelay<Void>
+        let didReset: PublishRelay<Void>
     }
     
     private let disposeBag = DisposeBag()
@@ -39,12 +41,24 @@ final class SettingViewModel {
             .asDriver(onErrorJustReturn: [])
         
         let nicknameDriver = TamagotchiManager.shared.currentTamagotchi
-                    .map { tamagotchi in
-                        tamagotchi.nickname }
-                    .asDriver(onErrorJustReturn: "")
+            .map { tamagotchi in
+                tamagotchi.nickname }
+            .asDriver(onErrorJustReturn: "")
         
         let selectedRow = input.cellSelected.map { indexPath in
             indexPath.row }
+        
+        let resetCompleteRelay = PublishRelay<Void>()
+        
+        input.resetConfirmed
+            .subscribe(with: self) { owner, _ in
+                
+                TamagotchiManager.shared.reset()
+                
+                
+                resetCompleteRelay.accept(())
+            }
+            .disposed(by: disposeBag)
         
         selectedRow
             .filter { row in
@@ -73,7 +87,8 @@ final class SettingViewModel {
             currentNickname: nicknameDriver,
             nameSettingTapped: nameSettingTappedRelay,
             changeTamagotchiTapped: changeTamagotchiTappedRelay,
-            resetTapped: resetTappedRelay
+            resetTapped: resetTappedRelay,
+            didReset: resetCompleteRelay
         )
     }
     
