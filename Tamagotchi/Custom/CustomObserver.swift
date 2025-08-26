@@ -59,7 +59,7 @@ final class CustomObservable {
                             observer.onError(LottoError.invalid)
                         }
                     case .failure(let error):
-                        observer.onError(error)
+                        observer.onError(LottoError.apiError(error))
                     }
                 }
             

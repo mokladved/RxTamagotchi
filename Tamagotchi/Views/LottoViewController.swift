@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-import Alamofire
+import Toast
 
 struct Lotto: Decodable {
     let returnValue: String
@@ -31,15 +31,16 @@ struct Lotto: Decodable {
 }
 
 
-final class LottoViewConttroller: BaseViewController {
+final class LottoViewController: BaseViewController {
     
+    private let viewModel = LottoViewModel()
     private let disposeBag = DisposeBag()
     
     private let inputTextField = UnderlineTextField()
     private let resultButton = UIButton()
     private let infoLabel = UILabel()
     private let resultStackView = UIStackView()
- 
+
     private let numberLabels = [UILabel(), UILabel(), UILabel(), UILabel(), UILabel(), UILabel()]
     private let plusLabel = UILabel()
     private let bonusLabel = UILabel()
@@ -49,51 +50,64 @@ final class LottoViewConttroller: BaseViewController {
         bind()
     }
     
-    
     private func bind() {
-        let roundNumber = resultButton.rx.tap
-            .withLatestFrom(inputTextField.rx.text.orEmpty)
-            .map { Int($0) }
-            .filter { $0 != nil }
-            .map { $0! }
-            .share()
-
-        let lottoResult = roundNumber
-            .flatMap { round -> Observable<Lotto> in
-                return CustomObservable.fetchLotto(round: round)
-            }
-            .asDriver(onErrorJustReturn: Lotto.empty)
+        let input = LottoViewModel.Input(
+            roundText: inputTextField.rx.text,
+            resultButtonTap: resultButton.rx.tap
+        )
         
-        lottoResult
-            .map { lotto -> String in
-                return lotto.returnValue == "success" ? "\(lotto.drwNo)회 당첨 번호" : "잘못된 회차입니다."
-            }
-            .drive(infoLabel.rx.text)
-            .disposed(by: disposeBag)
+        let output = viewModel.transform(input: input)
         
-        lottoResult
-            .drive(with: self, onNext: { owner, lotto in
-                if lotto.returnValue == "success" {
-                    for (index, label) in self.numberLabels.enumerated() {
-                        label.text = "\(lotto.numbers[index])"
-                        label.backgroundColor = self.getColor(for: lotto.numbers[index])
-                    }
-                    
-                    owner.bonusLabel.text = "\(lotto.bnusNo)"
-                    owner.bonusLabel.backgroundColor = owner.getColor(for: lotto.bnusNo)
-                    owner.plusLabel.isHidden = false
-                    owner.bonusLabel.isHidden = false
-                } else {
-                    for label in (owner.numberLabels + [owner.bonusLabel]) {
-                        label.text = ""
-                        label.backgroundColor = .clear
-                    }
-                    owner.plusLabel.isHidden = true
-                    owner.bonusLabel.isHidden = true
+        output.numberLabelAttribute
+            .drive(onNext: { [weak self] attributes in
+                guard let self = self else { return }
+                for (label, prop) in zip(self.numberLabels, attributes) {
+                    label.text = prop.text
+                    label.backgroundColor = prop.color
                 }
             })
             .disposed(by: disposeBag)
             
+        output.bonusLabelAttribute
+            .drive(onNext: { [weak self] prop in
+                self?.bonusLabel.text = prop.text
+                self?.bonusLabel.backgroundColor = prop.color
+            })
+            .disposed(by: disposeBag)
+            
+        output.infoText
+            .drive(infoLabel.rx.text)
+            .disposed(by: disposeBag)
+            
+        output.isBonusVisible
+            .drive(with: self, onNext: { owner, isVisible in
+                owner.plusLabel.isHidden = !isVisible
+                owner.bonusLabel.isHidden = !isVisible
+            })
+            .disposed(by: disposeBag)
+        
+        output.showToast
+            .subscribe(onNext: { [weak self] message in
+                self?.showToast(message: message)
+            })
+            .disposed(by: disposeBag)
+            
+        output.showAlert
+            .subscribe(onNext: { [weak self] message in
+                self?.showAlert(message: message)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func showToast(message: String) {
+        self.view.makeToast(message, duration: 2.0, position: .bottom)
+    }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(okAction)
+        present(alert, animated: true)
     }
     
     override func configureHierarchy() {
