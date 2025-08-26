@@ -196,7 +196,6 @@ final class LottoViewController: BaseViewController {
         
         for label in (numberLabels + [bonusLabel]) {
             label.layer.cornerRadius = label.frame.height / 2
-            print(label)
         }
     }
     

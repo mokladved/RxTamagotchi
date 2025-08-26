@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController = UITabBarController()
         
-        let lottoVC = LottoViewConttroller()
+        let lottoVC = LottoViewController()
         let boxVC = UINavigationController(rootViewController: BoxOfficeViewController())
         
         lottoVC.tabBarItem = UITabBarItem(title: Constants.UI.Title.lotto, image: Constants.UI.symbolImage.numbers, tag: 1)
