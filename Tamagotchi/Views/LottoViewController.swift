@@ -107,10 +107,15 @@ final class LottoViewConttroller: BaseViewController {
     }
     
     override func configureLayout() {
-        inputTextField.snp.makeConstraints { make in  make.top.equalTo(view.safeAreaLayoutGuide).offset(20); make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20); make.height.equalTo(50)
+        inputTextField.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.height.equalTo(50)
         }
         
-        resultButton.snp.makeConstraints { make in make.top.equalTo(inputTextField.snp.bottom).offset(20); make.horizontalEdges.equalTo(inputTextField)
+        resultButton.snp.makeConstraints { make in
+            make.top.equalTo(inputTextField.snp.bottom).offset(20)
+            make.horizontalEdges.equalTo(inputTextField)
             make.height.equalTo(40)
         }
         
@@ -138,8 +143,6 @@ final class LottoViewConttroller: BaseViewController {
         plusLabel.snp.makeConstraints { make in
             make.width.equalTo(plusLabel.snp.height)
         }
-        
-        
     }
     
     override func configureView() {
