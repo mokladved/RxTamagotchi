@@ -39,6 +39,7 @@ final class LottoViewModel {
         let lottoResult = input.resultButtonTap
             .withLatestFrom(input.roundText.orEmpty)
             .map { Int($0) ?? 0 }
+            .distinctUntilChanged()
             .flatMap { round -> Observable<Lotto> in
                 return CustomObservable.fetchLotto(round: round)
                     .retry(2)

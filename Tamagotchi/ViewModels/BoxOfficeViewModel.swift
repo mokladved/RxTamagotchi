@@ -30,6 +30,7 @@ final class BoxOfficeViewModel {
         
         let searchTrigger = input.searchButtonTap
             .withLatestFrom(input.searchText.orEmpty)
+            .distinctUntilChanged()
         
         let boxOfficeResult = searchTrigger
             .flatMap { date -> Observable<Result<[DailyBoxOffice], Error>> in
