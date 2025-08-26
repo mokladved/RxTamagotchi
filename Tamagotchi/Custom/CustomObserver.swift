@@ -15,6 +15,11 @@ final class CustomObservable {
 
     static func fetchBoxOffice(date: String) -> Observable<[DailyBoxOffice]> {
         return Observable.create { observer in
+            if !self.reachability.isReachable {
+                observer.onError(BoxOfficeError.networkDisconnected)
+                return Disposables.create()
+            }
+            
             let url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json"
             
             let parameters: [String: String] = [
@@ -29,8 +34,7 @@ final class CustomObservable {
                         observer.onNext(value.boxOfficeResult.dailyBoxOfficeList)
                         observer.onCompleted()
                     case .failure(let error):
-                        print(error.localizedDescription)
-                        observer.onError(error)
+                        observer.onError(BoxOfficeError.apiError(error))
                     }
                 }
             return Disposables.create {
