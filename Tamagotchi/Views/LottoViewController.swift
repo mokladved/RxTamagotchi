@@ -59,8 +59,7 @@ final class LottoViewController: BaseViewController {
         let output = viewModel.transform(input: input)
         
         output.numberLabelAttribute
-            .drive(onNext: { [weak self] attributes in
-                guard let self = self else { return }
+            .drive(with: self, onNext: { owner, attributes in
                 for (label, prop) in zip(self.numberLabels, attributes) {
                     label.text = prop.text
                     label.backgroundColor = prop.color
@@ -69,9 +68,9 @@ final class LottoViewController: BaseViewController {
             .disposed(by: disposeBag)
             
         output.bonusLabelAttribute
-            .drive(onNext: { [weak self] prop in
-                self?.bonusLabel.text = prop.text
-                self?.bonusLabel.backgroundColor = prop.color
+            .drive(with: self, onNext: { owner, prop in
+                owner.bonusLabel.text = prop.text
+                owner.bonusLabel.backgroundColor = prop.color
             })
             .disposed(by: disposeBag)
             
@@ -87,14 +86,14 @@ final class LottoViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         output.showToast
-            .subscribe(onNext: { [weak self] message in
-                self?.showToast(message: message)
+            .subscribe(with: self, onNext: { owner, message in
+                owner.showToast(message: message)
             })
             .disposed(by: disposeBag)
             
         output.showAlert
-            .subscribe(onNext: { [weak self] message in
-                self?.showAlert(message: message)
+            .subscribe(with: self, onNext: { owner, message in
+                self.showAlert(message: message)
             })
             .disposed(by: disposeBag)
     }
